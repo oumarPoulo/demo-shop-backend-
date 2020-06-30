@@ -1,0 +1,70 @@
+
+# ===============================
+# = default configurations
+# ===============================
+logging:
+  level:
+    .: ERROR
+    root: WARN
+    com.oumarpoulo: INFO
+    org:
+      springframework: ERROR
+      hibernate: ERROR
+
+#Default active profile
+spring:
+  profiles:
+    active: dev
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+server:
+  port: 8080
+
+---
+
+# ===============================
+# = development configurations
+# ===============================
+
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:shopdbdev
+    username: sa
+    password: password
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+logging:
+  level:
+    com.oumarpoulo: DEBUG
+    org:
+      springframework: INFO
+      hibernate:
+        SQL: DEBUG
+
+---
+
+## ===============================
+## = production configurations
+## ===============================
+
+spring:
+  profiles: production
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:shopdbprod
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    com.oumarpoulo: INFO
