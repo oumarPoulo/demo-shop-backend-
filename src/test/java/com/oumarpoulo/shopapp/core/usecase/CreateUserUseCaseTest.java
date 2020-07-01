@@ -3,10 +3,9 @@ package com.oumarpoulo.shopapp.core.usecase;
 
 import com.oumarpoulo.shopapp.core.dto.UserDto;
 import com.oumarpoulo.shopapp.core.entity.User;
-import com.oumarpoulo.shopapp.core.exception.*;
 import com.oumarpoulo.shopapp.core.entity.UserEmail;
+import com.oumarpoulo.shopapp.core.exception.*;
 import com.oumarpoulo.shopapp.core.gateway.UserRepository;
-import com.oumarpoulo.shopapp.core.usecase.CreateUserUseCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
