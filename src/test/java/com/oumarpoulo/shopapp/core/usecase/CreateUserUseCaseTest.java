@@ -1,7 +1,6 @@
 package com.oumarpoulo.shopapp.core.usecase;
 
 
-import com.oumarpoulo.shopapp.core.dto.UserDto;
 import com.oumarpoulo.shopapp.core.entity.User;
 import com.oumarpoulo.shopapp.core.entity.UserEmail;
 import com.oumarpoulo.shopapp.core.exception.*;
@@ -31,8 +30,8 @@ public class CreateUserUseCaseTest {
 
     @Test
     public void shouldThrowAnExceptionWhenUsernameIsEmpty() {
-        UserDto userDto = new UserDto("", "ayoub@altran.com");
-        assertThatThrownBy(() -> createUserUseCase.execute(userDto))
+        CreateUserRequest createUserRequest = new CreateUserRequest("", "ayoub@altran.com");
+        assertThatThrownBy(() -> createUserUseCase.execute(createUserRequest))
                 .isInstanceOf(InvalidUsernameException.class)
                 .hasMessageContaining("username is required");
     }
@@ -40,9 +39,9 @@ public class CreateUserUseCaseTest {
     @Test
     public void shouldThrowAnExceptionWhenUsernameExists() {
         String username = "Ayoub";
-        UserDto userDto = new UserDto(username, "ayoub@altran.com");
+        CreateUserRequest createUserRequest = new CreateUserRequest(username, "ayoub@altran.com");
         Mockito.when(userRepository.usernameExists(username)).thenReturn(true);
-        assertThatThrownBy(() -> createUserUseCase.execute(userDto))
+        assertThatThrownBy(() -> createUserUseCase.execute(createUserRequest))
                 .isInstanceOf(UserExistsException.class)
                 .hasMessageContaining("username Ayoub already exists");
     }
@@ -51,9 +50,9 @@ public class CreateUserUseCaseTest {
     public void shouldThrowAnExceptionWhenUserEmailInvalid() {
         String username = "Ayoub";
         String email = "";
-        UserDto userDto = new UserDto(username, email);
+        CreateUserRequest createUserRequest = new CreateUserRequest(username, email);
 
-        assertThatThrownBy(() -> createUserUseCase.execute(userDto))
+        assertThatThrownBy(() -> createUserUseCase.execute(createUserRequest))
                 .isInstanceOf(InvalidUserEmailException.class)
                 .hasMessageContaining("user email is required");
     }
@@ -62,12 +61,12 @@ public class CreateUserUseCaseTest {
     public void shouldThrowAnExceptionWhenUserEmailExists() {
         String username = "Ayoub";
         String email = "ayoub@altran.com";
-        UserDto userDto = new UserDto(username, email);
+        CreateUserRequest createUserRequest = new CreateUserRequest(username, email);
 
         Mockito.when(userRepository.usernameExists(username)).thenReturn(false);
         Mockito.when(userRepository.userEmailExists(email)).thenReturn(true);
 
-        assertThatThrownBy(() -> createUserUseCase.execute(userDto))
+        assertThatThrownBy(() -> createUserUseCase.execute(createUserRequest))
                 .isInstanceOf(UserEmailExistsException.class)
                 .hasMessageContaining("user with email ayoub@altran.com already exists");
     }
@@ -76,9 +75,9 @@ public class CreateUserUseCaseTest {
     public void shouldThrowAnExceptionWhenInvalidEmail() {
         String username = "Ayoub";
         String email = "ayoubaltran.com";
-        UserDto userDto = new UserDto(username, email);
+        CreateUserRequest createUserRequest = new CreateUserRequest(username, email);
 
-        assertThatThrownBy(() -> createUserUseCase.execute(userDto))
+        assertThatThrownBy(() -> createUserUseCase.execute(createUserRequest))
                 .isInstanceOf(InvalidUserEmailException.class)
                 .hasMessageContaining("user email format is invalid");
     }
@@ -87,9 +86,9 @@ public class CreateUserUseCaseTest {
     public void shouldThrowAnExceptionWhenUserCreationFailed() {
         String username = "Ayoub";
         String email = "ayoub@altran.com";
-        UserDto userDto = new UserDto(username, email);
+        CreateUserRequest createUserRequest = new CreateUserRequest(username, email);
         Mockito.when(userRepository.save(new User(username, new UserEmail(email)))).thenThrow(new RuntimeException("repository error"));
-        assertThatThrownBy(() -> createUserUseCase.execute(userDto))
+        assertThatThrownBy(() -> createUserUseCase.execute(createUserRequest))
                 .isInstanceOf(UserServiceException.class)
                 .hasMessageContaining("unable to create user " + username);
     }
@@ -99,14 +98,14 @@ public class CreateUserUseCaseTest {
         // given
         String username = "Ayoub";
         String email = "ayoub@altran.com";
-        UserDto userDto = new UserDto(username, email);
+        CreateUserRequest createUserRequest = new CreateUserRequest(username, email);
 
         // when
         Mockito.when(userRepository.usernameExists(username)).thenReturn(false);
         Mockito.when(userRepository.userEmailExists(email)).thenReturn(false);
         Mockito.when(userRepository.save(new User(username, new UserEmail(email)))).thenReturn(new User(username, new UserEmail(email)));
 
-        User user = createUserUseCase.execute(userDto);
+        User user = createUserUseCase.execute(createUserRequest);
 
         // then
         assertThat(user).isNotNull();

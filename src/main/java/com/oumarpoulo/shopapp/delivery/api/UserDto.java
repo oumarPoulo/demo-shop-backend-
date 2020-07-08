@@ -1,4 +1,4 @@
-package com.oumarpoulo.shopapp.core.dto;
+package com.oumarpoulo.shopapp.delivery.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
